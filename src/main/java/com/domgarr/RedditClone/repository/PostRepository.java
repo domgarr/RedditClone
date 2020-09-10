@@ -1,4 +1,4 @@
-package com.domgarr.RedditClone.Repository;
+package com.domgarr.RedditClone.repository;
 
 import com.domgarr.RedditClone.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;

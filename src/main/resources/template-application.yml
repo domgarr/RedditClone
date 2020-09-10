@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/spring-reddit
-    username: reddit_dev_user
-    password: password
+    username:
+    password:
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     format-sql: true
@@ -13,8 +13,8 @@ spring:
   mail:
     host: smtp.mailtrap.io
     port: 2525
-    username: f23d42f74c6770
-    password: 05620a64b10850
+    username:
+    password:
     protocol: smtp
     ssl: no
     tls: yes
