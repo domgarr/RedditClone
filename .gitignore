@@ -5,6 +5,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 application*.yml
+*.jks
 
 ### STS ###
 .apt_generated

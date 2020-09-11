@@ -1,13 +1,19 @@
 package com.domgarr.RedditClone.service;
 
+import com.domgarr.RedditClone.dto.AuthenticationResponse;
 import com.domgarr.RedditClone.dto.RegisterRequest;
 import com.domgarr.RedditClone.exception.SpringRedditException;
+import com.domgarr.RedditClone.dto.LoginRequest;
 import com.domgarr.RedditClone.model.NotificationEmail;
 import com.domgarr.RedditClone.model.User;
 import com.domgarr.RedditClone.model.VerificationToken;
 import com.domgarr.RedditClone.repository.UserRepository;
 import com.domgarr.RedditClone.repository.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +30,8 @@ public class AuthService {
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final MailService mailService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
     @Transactional
     public void signup(RegisterRequest registerRequest){
@@ -68,5 +76,12 @@ public class AuthService {
         );
         user.setEnabled(true);
         userRepository.save(user);
+    }
+
+    public AuthenticationResponse login(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtProvider.generateToken(authentication);
+        return new AuthenticationResponse(token, loginRequest.getUsername());
     }
 }

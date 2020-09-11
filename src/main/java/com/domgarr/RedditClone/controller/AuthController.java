@@ -1,14 +1,13 @@
 package com.domgarr.RedditClone.controller;
 
+import com.domgarr.RedditClone.dto.AuthenticationResponse;
 import com.domgarr.RedditClone.dto.RegisterRequest;
-import com.domgarr.RedditClone.model.VerificationToken;
+import com.domgarr.RedditClone.dto.LoginRequest;
 import com.domgarr.RedditClone.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 
 @RestController
@@ -28,4 +27,11 @@ public class AuthController {
          authService.verifyAccount(token);
          return new ResponseEntity<>("Account was verified.", HttpStatus.OK);
     }
+
+    @PostMapping("/login")
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest){
+
+        return authService.login(loginRequest);
+    }
+
 }
