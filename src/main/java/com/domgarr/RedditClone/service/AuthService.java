@@ -9,6 +9,7 @@ import com.domgarr.RedditClone.model.User;
 import com.domgarr.RedditClone.model.VerificationToken;
 import com.domgarr.RedditClone.repository.UserRepository;
 import com.domgarr.RedditClone.repository.VerificationTokenRepository;
+import com.domgarr.RedditClone.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

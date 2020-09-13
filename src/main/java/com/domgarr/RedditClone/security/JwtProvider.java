@@ -1,6 +1,8 @@
-package com.domgarr.RedditClone.service;
+package com.domgarr.RedditClone.security;
 
 import com.domgarr.RedditClone.exception.SpringRedditException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -35,7 +37,7 @@ public class JwtProvider {
        User principle = (User) authentication.getPrincipal();
        return Jwts.builder()
                .setSubject(principle.getUsername())
-               .signWith(getPrivateKey())
+               .signWith(getPrivateKey()) //Asymmetric
                .compact();
    }
 
@@ -45,6 +47,25 @@ public class JwtProvider {
         } catch (Exception e) {
             throw new SpringRedditException("Exception occured while retrieving public key from the keystore." + e);
         }
+    }
+
+    public boolean validateToken(String jwt){
+        // https://dev.to/d_tomov/jwt-bearer-authentication-authorization-with-spring-security-5-in-a-spring-boot-app-2cfe
+        Jwts.parserBuilder().setSigningKey(getPublicKey()).build().parseClaimsJws(jwt);
+        return true;
+    }
+
+    private PublicKey getPublicKey() {
+        try {
+            return keyStore.getCertificate("redditclonekey").getPublicKey();
+        } catch (KeyStoreException e) {
+            throw new SpringRedditException("Exception occurred while getting public key.");
+        }
+    }
+
+    public String getUsernameFromJwt(String jwt){
+        Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(getPublicKey()).build().parseClaimsJws(jwt);
+        return claims.getBody().getSubject();
     }
 
 
