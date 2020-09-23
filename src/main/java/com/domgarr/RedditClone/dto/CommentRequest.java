@@ -9,6 +9,7 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+//TODO: Either call this CommentResponse or CommentDto.
 public class CommentRequest {
     private Long id;
     private Long postId;

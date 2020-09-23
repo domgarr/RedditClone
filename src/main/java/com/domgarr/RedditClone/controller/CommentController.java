@@ -1,7 +1,6 @@
 package com.domgarr.RedditClone.controller;
 
 import com.domgarr.RedditClone.dto.CommentRequest;
-import com.domgarr.RedditClone.dto.CommentResponse;
 import com.domgarr.RedditClone.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
