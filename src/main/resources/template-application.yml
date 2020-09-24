@@ -20,3 +20,7 @@ spring:
     tls: yes
 server:
   port: 8081
+
+jwt:
+  expiration:
+    time: 900000

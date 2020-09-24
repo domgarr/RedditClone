@@ -4,6 +4,7 @@ import com.domgarr.RedditClone.exception.SpringRedditException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;
@@ -13,10 +14,18 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.InputStream;
 import java.security.*;
+import java.sql.Date;
+import java.time.Instant;
 
 @Service
 public class JwtProvider {
     private KeyStore keyStore;
+
+
+
+    @Value("${jwt.expiration.time}")
+    private Long expirationAmount;
+
 
     //@PostConstruct is used here because we would like to run this method containing initializing logic after DI is performed.
     @PostConstruct
@@ -33,11 +42,16 @@ public class JwtProvider {
     }
 
 
-   public String generateToken(Authentication authentication){
-       User principle = (User) authentication.getPrincipal();
+   public String generateToken(Authentication authentication, String username){
+       if(authentication != null){
+           User principle = (User) authentication.getPrincipal();
+           username = principle.getUsername();
+       }
+
        return Jwts.builder()
-               .setSubject(principle.getUsername())
+               .setSubject(username)
                .signWith(getPrivateKey()) //Asymmetric
+               .setExpiration(Date.from(Instant.now().plusMillis(expirationAmount)))
                .compact();
    }
 
@@ -66,6 +80,10 @@ public class JwtProvider {
     public String getUsernameFromJwt(String jwt){
         Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(getPublicKey()).build().parseClaimsJws(jwt);
         return claims.getBody().getSubject();
+    }
+
+    public Long getExpirationAmount() {
+        return expirationAmount;
     }
 
 

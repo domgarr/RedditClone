@@ -1,6 +1,7 @@
 package com.domgarr.RedditClone.service;
 
 import com.domgarr.RedditClone.dto.AuthenticationResponse;
+import com.domgarr.RedditClone.dto.RefreshTokenRequest;
 import com.domgarr.RedditClone.dto.RegisterRequest;
 import com.domgarr.RedditClone.exception.SpringRedditException;
 import com.domgarr.RedditClone.dto.LoginRequest;
@@ -33,6 +34,7 @@ public class AuthService {
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public void signup(RegisterRequest registerRequest){
@@ -82,13 +84,30 @@ public class AuthService {
     public AuthenticationResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtProvider.generateToken(authentication);
-        return new AuthenticationResponse(token, loginRequest.getUsername());
+        String token = jwtProvider.generateToken(authentication, null);
+        return  AuthenticationResponse.builder()
+                .authenticationToken(token)
+                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getExpirationAmount()))
+                .username(loginRequest.getUsername())
+                .build();
+
     }
 
-    @Transactional(readOnly = true) //TODO: Understand why readOnly false is being used here.
+    @Transactional(readOnly = true) //TODO: Understand why readOnly true is being used here.
     public User getCurrentUser() {
         org.springframework.security.core.userdetails.User principal= (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userRepository.findByUsername(principal.getUsername()).orElseThrow( () -> new SpringRedditException("User with username " + principal.getUsername() + " not found."));
+    }
+
+    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest){
+         refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
+         String token = jwtProvider.generateToken(null, refreshTokenRequest.getUsername());
+         return AuthenticationResponse.builder()
+                 .authenticationToken(token)
+                 .refreshToken(refreshTokenRequest.getRefreshToken())
+                 .expiresAt(Instant.now().plusMillis(jwtProvider.getExpirationAmount()))
+                 .username(refreshTokenRequest.getUsername())
+                 .build();
     }
 }
