@@ -1,29 +1,13 @@
+@import "../../utility.css";
+
 .float-right {
     margin-left: auto;
-}
-
-.container{
-    display: flex;
 }
 
 .reddit-icon {
     width: 32px;
     height: 32px;
     background-color: transparent;
-}
-
-.margin-left-12 {
-    margin-left: 12px;
-}
-
-.margin-right-12 {
-    margin-right: 12px;
-}
-
-.padding-left-right-12 {
-    padding-right: 24px;
-    padding-left: 24px;
-    
 }
 
 .search-bar {

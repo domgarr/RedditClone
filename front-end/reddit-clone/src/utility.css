@@ -1,0 +1,32 @@
+.container{
+    display: flex;
+}
+
+.ml-12 {
+    margin-left: 12px;
+}
+
+.mr-12 {
+    margin-right: 12px;
+}
+
+.mb-12 {
+    margin-bottom: 12px;
+}
+
+.mt-12 {
+    margin-top: 12px;
+}
+
+.plr-24 {
+    padding-right: 24px;
+    padding-left: 24px;
+}
+
+.pb-12 {
+    padding-bottom: -6px;
+}
+
+.accent-background {
+    background-color: #ff4081;
+}

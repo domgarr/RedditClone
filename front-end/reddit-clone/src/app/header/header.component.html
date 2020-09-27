@@ -1,25 +1,24 @@
 <mat-toolbar class="container">
     <img class="reddit-icon" src="/assets/reddit_icon.png">
-    <mat-form-field class="padding-left-right-12 search-bar"  >
+    <h2 class="ml-12">clone</h2>
+    <mat-form-field class="plr-24 search-bar"  >
         <mat-label style="font-size: 16px;">Search</mat-label>
         <input matInput type="text" >
         <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
           <mat-icon>close</mat-icon>
         </button>
     </mat-form-field>
+    
 
     
     <div class="float-right">
         <button mat-stroked-button color="primary">LOG IN</button>
-
-        <button mat-raised-button color="primary" class="margin-left-12">SIGN UP</button>
-        <button mat-icon-button class="material-icons margin-left-12" [matMenuTriggerFor]="beforeMenu">
+        <button mat-raised-button color="primary" class="ml-12" (click)="openSignUp()">SIGN UP</button>
+        <button mat-icon-button class="material-icons ml-12" [matMenuTriggerFor]="beforeMenu">
             <mat-icon> account_circle </mat-icon>
         </button>
-<mat-menu #beforeMenu="matMenu" xPosition="before">
-  <button mat-menu-item>Night Mode</button>
-</mat-menu>
-
-        
+        <mat-menu #beforeMenu="matMenu" xPosition="before">
+          <button mat-menu-item>Night Mode</button>
+        </mat-menu>
     </div>
 </mat-toolbar>

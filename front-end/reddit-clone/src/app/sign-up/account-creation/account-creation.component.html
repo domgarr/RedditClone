@@ -1,0 +1,40 @@
+    <h2 mat-dialog-title>Choose your username</h2>
+    <p>Your username is how other community members will see you. This name will be used to credit you for things you share on Reddit. What should we call you?</p>
+    <mat-divider class="mb-12"></mat-divider>
+    <form [formGroup]="signUpFormGroup">
+        <p>
+        <mat-form-field appearance="outline" class="pb-12">
+          <mat-label>CHOOSE A USERNAME</mat-label>
+          <input matInput placeholder="Placeholder" [formControlName]="'username'">
+          <!--<mat-icon matSuffix>done_outline</mat-icon> -->
+          <mat-error *ngIf="!signUpFormGroup.get('username').valid && signUpFormGroup.get('username').touched" >USERNAME (MIN = 8, MAX = 20)</mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="outline">
+          <mat-label>PASSWORD</mat-label>
+          <input  type="password" matInput placeholder="Placeholder" [formControlName]="'password'" (keyup)="onChangePassword()">
+          <mat-error *ngIf="signUpFormGroup.get('password').errors && (signUpFormGroup.get('password').errors.minlength || signUpFormGroup.get('password').errors.maxlength) && signUpFormGroup.get('password').touched" >PASSWORD (MIN = 8, MAX = 20)</mat-error>
+          
+          <!--<mat-icon matSuffix>done_outline</mat-icon> -->
+        </mat-form-field>
+      </p>
+
+      <p>
+        <mat-form-field appearance="outline">
+          <mat-label>RETYPE PASSWORD</mat-label>
+          <input type="password" matInput placeholder="Placeholder" [formControlName]="'retypePassword'">
+          <!--<mat-icon matSuffix>done_outline</mat-icon> -->
+          <mat-error *ngIf="signUpFormGroup.get('retypePassword').errors && (signUpFormGroup.get('retypePassword').errors.minlength || signUpFormGroup.get('retypePassword').errors.maxlength) && signUpFormGroup.get('retypePassword').touched" >PASSWORD (MIN = 8, MAX = 20) </mat-error>
+          <mat-error *ngIf="signUpFormGroup.get('retypePassword').errors && signUpFormGroup.get('retypePassword').errors.passwordEqualityError && signUpFormGroup.get('retypePassword').touched" >PASSWORDS DO NOT MATCH</mat-error>
+        </mat-form-field>
+      </p>
+
+      <div style="width: 100%;">     
+        <mat-dialog-actions >
+        <button mat-button style="margin-right: auto;" (click)="onBack()">Back</button>
+        <button mat-raised-button color="primary" cdkFocusInitial style="margin-left: auto;" [disabled]="!signUpFormGroup.valid" (click)="onSignUp()">SIGN UP</button>
+      </mat-dialog-actions>
+    </div>
+    </form>
+    
