@@ -6,11 +6,11 @@ import { SubredditNotFoundComponent } from '../../subreddit/subreddit-not-found/
 
 const routes : Routes = [
   {path: 'r/:subreddit_id', component: SubredditComponent},
-  {path: '', redirectTo: 'r/all' , pathMatch: 'full'}
+  {path: 'r/all', component: SubredditComponent},
+  {path: '', redirectTo: '' , pathMatch: 'full'}
 ];
 
 @NgModule({
-  declarations: [],
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })

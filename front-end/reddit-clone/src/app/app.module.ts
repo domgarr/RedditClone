@@ -10,12 +10,11 @@ import { AccountCreationComponent } from './sign-up/account-creation/account-cre
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './module/material/material.module';
-import { MatFormFieldModule } from '@angular/material';
 import { SignUpOptionComponent } from './sign-up/sign-up-option/sign-up-option.component';
 import { SubredditComponent } from './subreddit/subreddit.component';
 import { RoutingModule } from './module/routing/routing.module';
 import { SubredditNotFoundComponent } from './subreddit/subreddit-not-found/subreddit-not-found.component';
-import { NgxWebstorageModule, StrategyIndex } from 'ngx-webstorage';
+import { NgxWebstorageModule } from 'ngx-webstorage';
 
 @NgModule({
   declarations: [
@@ -33,7 +32,6 @@ import { NgxWebstorageModule, StrategyIndex } from 'ngx-webstorage';
     ReactiveFormsModule,
     HttpClientModule,
     MaterialModule,
-    MatFormFieldModule,
     RoutingModule,
     NgxWebstorageModule.forRoot()    
   ],

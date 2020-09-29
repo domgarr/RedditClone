@@ -1,9 +1,7 @@
 package com.domgarr.RedditClone.controller;
 
-import com.domgarr.RedditClone.dto.AuthenticationResponse;
-import com.domgarr.RedditClone.dto.RefreshTokenRequest;
-import com.domgarr.RedditClone.dto.RegisterRequest;
-import com.domgarr.RedditClone.dto.LoginRequest;
+import com.domgarr.RedditClone.dto.*;
+import com.domgarr.RedditClone.exception.DataIntegrityError;
 import com.domgarr.RedditClone.service.AuthService;
 import com.domgarr.RedditClone.service.RefreshTokenService;
 import lombok.AllArgsConstructor;
@@ -23,8 +21,8 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest){
-        authService.signup(registerRequest);
-        return new ResponseEntity<>("User Registration successful.", HttpStatus.OK);
+
+        return new ResponseEntity<>(authService.signup(registerRequest), HttpStatus.OK);
     }
 
     @GetMapping("/accountVerification/{token}")
@@ -48,6 +46,41 @@ public class AuthController {
     public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest){
         refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
         return ResponseEntity.status(HttpStatus.OK).body("Refresh Token deleted successfully.");
+    }
+
+
+    @GetMapping("/check/username/{username}") public ResponseEntity<String> checkUsernameExists(@PathVariable String username){
+        boolean exists = authService.checkUsernameExists(username);
+
+        String response;
+        HttpStatus status;
+
+        if(exists){
+            response = "Username is taken";
+            status = HttpStatus.BAD_REQUEST;
+        }else{
+            response = "Username is unique.";
+            status = HttpStatus.OK;
+        }
+
+        return ResponseEntity.status(status).body(response);
+    }
+
+    @PostMapping("/check/email") public ResponseEntity<String> checkEmailExists(@RequestBody EmailRequest emailRequest){
+        boolean exists = authService.checkEmailExists(emailRequest.getEmail());
+
+        String response;
+        HttpStatus status;
+
+        if(exists){
+            response = "Email is being used.";
+            status = HttpStatus.BAD_REQUEST;
+        }else{
+            response = "Email is unique.";
+            status = HttpStatus.OK;
+        }
+
+        return ResponseEntity.status(status).body(response);
     }
 
 }

@@ -11,7 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.time.Instant;
 
 @Data
@@ -26,12 +26,15 @@ public class User {
     private long id;
 
     @NotBlank(message = "Username is required.")
+    @Size(min=8, max=20)
     private String username;
+
     @NotBlank(message = "Password is required.")
+    @Size(min=50, max=72)
     private String password;
 
     @Email
-    @NotEmpty(message = "Email is required.")
+    @NotBlank(message = "Email is required.")
     private String email;
 
     private Instant created;

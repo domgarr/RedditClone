@@ -1,10 +1,8 @@
 package com.domgarr.RedditClone.service;
 
-import com.domgarr.RedditClone.dto.AuthenticationResponse;
-import com.domgarr.RedditClone.dto.RefreshTokenRequest;
-import com.domgarr.RedditClone.dto.RegisterRequest;
+import com.domgarr.RedditClone.dto.*;
+import com.domgarr.RedditClone.exception.DataIntegrityError;
 import com.domgarr.RedditClone.exception.SpringRedditException;
-import com.domgarr.RedditClone.dto.LoginRequest;
 import com.domgarr.RedditClone.model.NotificationEmail;
 import com.domgarr.RedditClone.model.User;
 import com.domgarr.RedditClone.model.VerificationToken;
@@ -19,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -35,9 +34,28 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
+    private final ValidationService validationService;
+
+    private final String successfulSignUpString = "User Registration successful.";
 
     @Transactional
-    public void signup(RegisterRequest registerRequest){
+    public String signup(RegisterRequest registerRequest){
+
+        String errorMessage = validationService.validate(registerRequest);
+        if(!errorMessage.isEmpty()){
+            throw new DataIntegrityError(errorMessage);
+        }
+
+        //Check if username is unique.
+        if(checkUsernameExists(registerRequest.getUsername())){
+            throw new DataIntegrityError("username is being used.");
+        }
+
+        //Check if email is unique.
+        if(checkEmailExists(registerRequest.getEmail())){
+            throw new DataIntegrityError("email is being used.");
+        }
+
         User user = new User();
         user.setUsername(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
@@ -49,6 +67,8 @@ public class AuthService {
         String token = generateVerificationToken(savedUser);
         mailService.sendMail(new NotificationEmail("Please activate your account", user.getEmail(),
                 "Please click the link below: http://localhost:8081/api/auth/accountVerification/" + token));
+
+        return successfulSignUpString;
     }
 
     private String generateVerificationToken(User user){
@@ -68,6 +88,8 @@ public class AuthService {
         );
 
         fetchUserAndEnable(verificationToken.get());
+
+        //TODO: Delete token from database.
 
     }
 
@@ -109,5 +131,43 @@ public class AuthService {
                  .expiresAt(Instant.now().plusMillis(jwtProvider.getExpirationAmount()))
                  .username(refreshTokenRequest.getUsername())
                  .build();
+    }
+
+    public boolean checkUsernameExists(String username) {
+        RegisterRequest registerRequest = RegisterRequest.builder().username(username).build();
+
+        String errorMessage = validationService.validateProperty(registerRequest, "username");
+        if(!errorMessage.isEmpty()){
+            throw new DataIntegrityError(errorMessage);
+        }
+
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean checkEmailExists(String email) {
+        EmailRequest emailRequest = new EmailRequest(email);
+        //Check if the email is given in the proper format before continuing.
+        String errorMessage = validationService.validateProperty(emailRequest, "email");
+        if(!errorMessage.isEmpty()){
+            throw new DataIntegrityError(errorMessage);
+        }
+
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        //If the user is not present, the email is unique.
+        if(!userOptional.isPresent()){
+            return false;
+        }
+
+        User user = userOptional.get();
+        //If the account is enabled, this means the user has access to they given email and has activated there account.
+        if(user.isEnabled()){
+            return true;
+        }else{
+            /*
+                Although, if the user has not activated the account, that email is free to be taken by whomever activates the account with the email.
+                This should prevent people from using emails they do not own.
+             */
+            return false;
+        }
     }
 }

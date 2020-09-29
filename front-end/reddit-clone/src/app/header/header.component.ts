@@ -1,5 +1,4 @@
-import { ComponentType } from '@angular/cdk/portal';
-import { Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AccountCreationComponent } from '../sign-up/account-creation/account-creation.component';
