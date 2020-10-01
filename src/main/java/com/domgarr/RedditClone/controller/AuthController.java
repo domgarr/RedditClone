@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -49,38 +52,24 @@ public class AuthController {
     }
 
 
-    @GetMapping("/check/username/{username}") public ResponseEntity<String> checkUsernameExists(@PathVariable String username){
+    @GetMapping("/check/username/{username}") public ResponseEntity<Map<Object, Object>> checkUsernameExists(@PathVariable String username){
         boolean exists = authService.checkUsernameExists(username);
-
-        String response;
-        HttpStatus status;
-
-        if(exists){
-            response = "Username is taken";
-            status = HttpStatus.BAD_REQUEST;
-        }else{
-            response = "Username is unique.";
-            status = HttpStatus.OK;
-        }
-
-        return ResponseEntity.status(status).body(response);
+        String message = exists ? "Username is taken." : "Username is unique.";
+        return ResponseEntity.status(HttpStatus.OK).body(buildExistCheckResponseBody(exists, message));
     }
 
-    @PostMapping("/check/email") public ResponseEntity<String> checkEmailExists(@RequestBody EmailRequest emailRequest){
+    @PostMapping("/check/email") public ResponseEntity<Map<Object, Object>> checkEmailExists(@RequestBody EmailRequest emailRequest){
         boolean exists = authService.checkEmailExists(emailRequest.getEmail());
+        String message = exists ? "Email is being used." : "Email is unique.";
+        return ResponseEntity.status(HttpStatus.OK).body(buildExistCheckResponseBody(exists, message));
+    }
 
-        String response;
-        HttpStatus status;
-
-        if(exists){
-            response = "Email is being used.";
-            status = HttpStatus.BAD_REQUEST;
-        }else{
-            response = "Email is unique.";
-            status = HttpStatus.OK;
-        }
-
-        return ResponseEntity.status(status).body(response);
+    //TODO: If used else where in the program, create a class.
+    Map<Object, Object> buildExistCheckResponseBody(boolean exists, String message){
+        Map<Object, Object> response = new HashMap<>();
+        response.put("exists", exists);
+        response.put("message", message);
+        return response;
     }
 
 }

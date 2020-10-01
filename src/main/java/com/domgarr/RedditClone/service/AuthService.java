@@ -152,22 +152,6 @@ public class AuthService {
             throw new DataIntegrityError(errorMessage);
         }
 
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        //If the user is not present, the email is unique.
-        if(!userOptional.isPresent()){
-            return false;
-        }
-
-        User user = userOptional.get();
-        //If the account is enabled, this means the user has access to they given email and has activated there account.
-        if(user.isEnabled()){
-            return true;
-        }else{
-            /*
-                Although, if the user has not activated the account, that email is free to be taken by whomever activates the account with the email.
-                This should prevent people from using emails they do not own.
-             */
-            return false;
-        }
+        return  userRepository.existsByEmailAndEnabled(email).byteValue() == 1 ? true : false;
     }
 }

@@ -16,6 +16,6 @@ export class LoginRequest {
     }
 
     set Password(password : string) {
-        this.username = password;
+        this.password = password;
     }
 }

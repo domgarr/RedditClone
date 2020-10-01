@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
@@ -17,6 +18,7 @@ public class RegisterRequest {
 
     @NotBlank()
     @Size(min=8, max=20)
+    @Pattern(regexp = "^[a-zA-Z1-9]+(_?)([a-zA-Z1-9]+)$")
     private String username;
 
     @Email

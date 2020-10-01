@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { LoginRequest } from '../model/LoginRequest';
@@ -18,6 +18,7 @@ export class SignUpComponent implements OnInit {
   continuingSubscription : Subscription;
   backingSubscription : Subscription;
   signUpSubscription : Subscription;
+  closeSubscription : Subscription;
 
   signUpFormGroup: FormGroup;
 
@@ -45,11 +46,14 @@ export class SignUpComponent implements OnInit {
           this.onSignUp(); 
         }
       );
+
+      this.closeSubscription = signUpService.closeAnnounced$.subscribe(
+        ()=>{
+        this.signUpFormGroup.reset();
+      });
   }
 
-  
-
-  renderAccountCreation(){
+renderAccountCreation(){
     this.isContinuing = true;
   }
 
@@ -73,22 +77,10 @@ export class SignUpComponent implements OnInit {
     }
 
     this.authService.signUp(signUpRequest).subscribe(data=>{
+      this.displaySnackBar("Welcome to Reddit! Please check your email for the activation URL :)");
       this.signUpService.announceSignUpSuccessfull();
-      //Attempt to authenticate.
-      let loginRequest : LoginRequest;
-      loginRequest.Username = signUpRequest.Username;
-      loginRequest.Password = signUpRequest.Password;
-
-      this.login(loginRequest);
     }, error =>{
-      this.displaySignUpErrorSnackBar();
-    });
-  }
-
-  login(loginRequest : LoginRequest){
-    this.authService.login(loginRequest).subscribe(response =>{
-      console.log("Login successful.");
-      
+      this.displaySnackBar("There seemed to be a problem on our end. Please try again.");
     });
   }
 
@@ -111,11 +103,9 @@ export class SignUpComponent implements OnInit {
     return signUpRequest;
   }
 
-  displaySignUpErrorSnackBar(){
-    this.snackBar.open("There seemed to be a problem on our end. Please try again.", "Dismiss", {
-      duration : 60000
+  displaySnackBar(message : string){
+    this.snackBar.open(message, "Dismiss", {
+      duration : 10000
     });
   }
-
-
 }

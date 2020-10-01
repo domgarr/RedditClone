@@ -12,16 +12,20 @@
             <h4 class="mt-12" style="font-weight: bold;">Create account</h4>
             
             <form [formGroup]="signUpFormGroup">
-                <p>
+                <div>                <p>
                     <mat-form-field appearance="fill">
-                    <mat-label>EMAIL</mat-label>
-                    <input matInput type="email" placeholder="" [formControlName]="'email'" >
-                    <mat-error *ngIf="!signUpFormGroup.get('email').valid && signUpFormGroup.get('email').touched" >INVALID EMAIL</mat-error>
+                        <mat-label>EMAIL</mat-label>
+                        <input matInput type="email" placeholder="" [formControlName]="'email'">
+                        <mat-error *ngIf="signUpFormGroup.get('email').errors && signUpFormGroup.get('email').errors.email && signUpFormGroup.get('email').touched" >INVALID EMAIL</mat-error>
+                        <mat-error *ngIf="signUpFormGroup.get('email').errors && signUpFormGroup.get('email').errors.emailExistsError && signUpFormGroup.get('email').touched" >EMAIL IS IN USE</mat-error>    
                     </mat-form-field>
                 </p>
-          
-        <button mat-flat-button color="primary" (click)="onContinue()" [disabled]="!signUpFormGroup.get('email').valid">CONTINUE</button>
-    </form> 
+            </div>
+                <button style="height: 36px; width: 100px;" mat-flat-button color="primary" (click)="onContinue()" [disabled]="signUpFormGroup.get('email').invalid || signUpFormGroup.pending"><span *ngIf="!signUpFormGroup.pending ">CONTINUE</span>
+                    <mat-spinner style="margin:auto;"  *ngIf="signUpFormGroup.pending" diameter="15" mode="indeterminate"></mat-spinner>
+                </button>
+            </form> 
+
         <div>
         Already a redditor?     
         <button mat-button color="primary">LOG IN</button>

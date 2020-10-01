@@ -21,7 +21,7 @@ export class HeaderComponent implements OnInit {
 
 
   constructor(public signUpDialog : MatDialog, private signUpService : SignUpService) { 
-    
+    this.subscribeToSignUpService(signUpService);
   }
 
   subscribeToSignUpService(signUpService : SignUpService){
@@ -36,9 +36,14 @@ export class HeaderComponent implements OnInit {
   openSignUp(){
     this.signUpDialogRef = this.signUpDialog.open(SignUpComponent);
     this.signUpDialogRef.updateSize("800","800")
+
+    this.signUpDialog.afterAllClosed.subscribe(()=>{
+      this.signUpService.announceClose();
+    });
   }
 
   closeSignUp(){
-    this.signUpDialogRef.close;
+    this.signUpDialog.closeAll();
+    this.signUpService.announceClose();
   }
 }
