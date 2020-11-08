@@ -10,13 +10,22 @@
     </mat-form-field>
     
     <div class="float-right">
-        <button mat-stroked-button color="primary">LOG IN</button>
-        <button mat-raised-button color="primary" class="ml-12" (click)="openSignUp()">SIGN UP</button>
+        <button *ngIf="isTokenExpired" mat-stroked-button color="primary" (click)="openLogin()">LOG IN</button>
+        <button *ngIf="isTokenExpired" mat-raised-button color="primary" class="ml-12" (click)="openSignUp()">SIGN UP</button>
+        <button *ngIf="!isTokenExpired" mat-stroked-button color="primary" >POST</button>
         <button mat-icon-button class="material-icons ml-12" [matMenuTriggerFor]="beforeMenu">
-            <mat-icon> account_circle </mat-icon>
+            <mat-icon> menu </mat-icon>
         </button>
         <mat-menu #beforeMenu="matMenu" xPosition="before">
-          <button mat-menu-item>Night Mode</button>
+          <button mat-menu-item>
+            <mat-icon>nights_stay</mat-icon>
+            <span>Night Mode</span>
+          </button>
+          <mat-divider *ngIf="!isTokenExpired"></mat-divider>
+          <button *ngIf="!isTokenExpired" mat-menu-item (click)="onLogout()">
+            <mat-icon> exit_to_app </mat-icon>
+            <span>Log Out</span>
+          </button>
         </mat-menu>
     </div>
 </mat-toolbar>

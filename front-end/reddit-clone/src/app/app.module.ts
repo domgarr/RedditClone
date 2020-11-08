@@ -15,6 +15,7 @@ import { SubredditComponent } from './subreddit/subreddit.component';
 import { RoutingModule } from './module/routing/routing.module';
 import { SubredditNotFoundComponent } from './subreddit/subreddit-not-found/subreddit-not-found.component';
 import { NgxWebstorageModule } from 'ngx-webstorage';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { NgxWebstorageModule } from 'ngx-webstorage';
     AccountCreationComponent,
     SignUpOptionComponent,
     SubredditComponent,
-    SubredditNotFoundComponent
+    SubredditNotFoundComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

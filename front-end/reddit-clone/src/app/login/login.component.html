@@ -1,0 +1,33 @@
+<h4 style="font-weight: bold;">Login</h4>
+<p>By continuing, you agree to our User Agreement and Privacy Policy.</p>
+<button  mat-button disalbed matTooltip="CURRENTLY DISABLED"  class="mt-12"style="display:block; padding: 0px; border:none; background: none;"  >
+<img style="height: 100%;width:100%;" src="assets\btn_google_signin_light_normal_web.png"/>
+</button>
+<mat-divider class="mt-12"></mat-divider>
+<form [formGroup]="loginFormGroup">
+    <p>
+    <mat-form-field appearance="outline" class="pb-12">
+      <mat-label>USERNAME</mat-label>
+      <input matInput  [formControlName]="'username'">
+      <!--<mat-icon matSuffix>done_outline</mat-icon> -->
+      <mat-error *ngIf="loginFormGroup.get('username').errors && ( loginFormGroup.get('username').errors.minlength || loginFormGroup.get('username').errors.maxlength ) && loginFormGroup.get('username').touched" >USERNAME (MIN = 8, MAX = 20)</mat-error>
+      <mat-error *ngIf="loginFormGroup.get('username').errors && loginFormGroup.get('username').errors.usernameExistsError && loginFormGroup.get('username').touched" >USERNAME IS IN USE</mat-error> 
+      <mat-error matTooltip="VALID EXAMPLES: Username1 OR user_name1" *ngIf="loginFormGroup.get('username').errors && loginFormGroup.get('username').errors.pattern && loginFormGroup.get('username').touched" >INCORRECT FORMAT</mat-error>    
+
+    </mat-form-field>
+    
+  </p>
+  <p>
+    <mat-form-field appearance="outline">
+      <mat-label>PASSWORD</mat-label>
+      <input  type="password" matInput  [formControlName]="'password'" >
+      <mat-error *ngIf="loginFormGroup.get('password').errors && loginFormGroup.get('password').touched && (loginFormGroup.get('password').errors.minlength || loginFormGroup.get('password').errors.maxlength)" >PASSWORD (MIN = 8, MAX = 20)</mat-error>
+      <mat-error *ngIf="loginFormGroup.get('password').errors && loginFormGroup.get('password').errors.incorrectPasswordError">INCORRECT PASSWORD</mat-error>
+    </mat-form-field>
+  </p>
+
+  <button mat-raised-button color="primary" [disabled]="!loginFormGroup.valid" (click)="onLogin()">LOG IN</button> 
+  
+  
+
+</form>

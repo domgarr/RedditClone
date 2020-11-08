@@ -42,6 +42,7 @@ export class SignUpService {
   }
 
   announceClose(){
+    this.signUpFormGroup.reset();
     this.closeSource.next();
   }
 

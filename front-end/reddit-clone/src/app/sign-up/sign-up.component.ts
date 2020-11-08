@@ -46,11 +46,6 @@ export class SignUpComponent implements OnInit {
           this.onSignUp(); 
         }
       );
-
-      this.closeSubscription = signUpService.closeAnnounced$.subscribe(
-        ()=>{
-        this.signUpFormGroup.reset();
-      });
   }
 
 renderAccountCreation(){
